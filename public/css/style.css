@@ -1,0 +1,184 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Background Image Styling for Homepage */
+body {
+  background: url("/images/background.jpg") no-repeat center center fixed;
+  background-size: cover;
+  color: #ffffff;
+}
+
+/* Admin Login Styling */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6); /* Dark overlay for readability */
+}
+
+form {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  text-align: center;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"],
+input[type="number"],
+textarea,
+button {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  border: none;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+/* Dashboard Styling */
+.dashboard-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.dashboard-container a {
+  margin: 10px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* Project Cards */
+.project-card {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  margin: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  width: 300px;
+  text-align: center;
+}
+
+.project-card h2 {
+  font-size: 1.5em;
+  color: #333;
+}
+
+.project-card p {
+  color: #555;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination a {
+  padding: 10px;
+  margin: 5px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.pagination a:hover {
+  background-color: #0056b3;
+}
+.search-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#results {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.project-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 5px;
+  text-align: left;
+}
+
+.project-card h3 {
+  margin: 0;
+}
+
+#pagination {
+  margin-top: 20px;
+}
+
+#pagination button {
+  padding: 5px 10px;
+  margin: 0 2px;
+}
+
+.project-details-container {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 20px;
+}
+
+.project-banner {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.project-info {
+  text-align: left;
+  margin-top: 20px;
+}
+
+.project-info p {
+  font-size: 1.1em;
+  margin: 5px 0;
+}
+
+.flash-message {
+  display: none; /* Hide by default */
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.flash-message.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.flash-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Show message when it has content */
+.flash-message:not(:empty) {
+  display: block;
+}

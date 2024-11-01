@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Details</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="project-details-container">
+      <% if (successMessage) { %>
+      <div class="flash-message success"><%= successMessage %></div>
+      <% } %> <% if (errorMessage) { %>
+      <div class="flash-message error"><%= errorMessage %></div>
+      <% } %>
+
+      <h1><%= project.title %></h1>
+
+      <% if (project.banner) { %>
+      <img
+        src="<%= project.banner %>"
+        alt="Project Banner"
+        class="project-banner"
+      />
+      <% } %>
+
+      <div class="project-info">
+        <p><strong>Author:</strong> <%= project.author %></p>
+        <p><strong>Supervisor:</strong> <%= project.supervisor %></p>
+        <p>
+          <strong>Year of Completion:</strong> <%= project.yearOfCompletion %>
+        </p>
+        <p>
+          <strong>Date Uploaded:</strong>
+          <%= project.createdAt instanceof Date ?
+          project.createdAt.toLocaleDateString() : "Not available" %>
+        </p>
+      </div>
+
+      <button onclick="window.history.back()">Go Back</button>
+    </div>
+  </body>
+</html>

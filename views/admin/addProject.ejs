@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Search</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <% if (successMessage) { %>
+    <div class="flash-message success"><%= successMessage %></div>
+    <% } %> <% if (errorMessage) { %>
+    <div class="flash-message error"><%= errorMessage %></div>
+    <% } %>
+    <form
+      action="/admin/add-project"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <input type="text" name="title" placeholder="Title" required />
+      <input type="file" name="banner" />
+      <!-- Use file input for image upload -->
+      <textarea name="description" placeholder="Description"></textarea>
+      <input type="text" name="author" placeholder="Author" required />
+      <input type="text" name="supervisor" placeholder="Supervisor" />
+      <input
+        type="number"
+        name="yearOfCompletion"
+        placeholder="Year of Completion"
+        required
+      />
+      <button type="submit">Add Project</button>
+
+      <button type="button" onclick="window.location.href='/admin/dashboard'">
+        Done
+      </button>
+      <!-- Done button -->
+    </form>
+    <script src="/js/flash-message.js"></script>
+  </body>
+</html>
