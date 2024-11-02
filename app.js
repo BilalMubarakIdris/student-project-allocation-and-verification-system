@@ -36,8 +36,21 @@ app.use((req, res, next) => {
 });
 app.use("/admin", require("./routes/admin"));
 app.use("/project", require("./routes/project"));
-app.get("/", (req, res) => {
-  res.render("home");
+const Project = require("./models/Project"); // Ensure the correct path to your Project model
+
+app.get("/", async (req, res) => {
+  try {
+    // Fetch the 10 most recent projects, sorted by createdAt in descending order
+    const recentProjects = await Project.find()
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    // Render the home view, passing the projects data
+    res.render("home", { projects: recentProjects });
+  } catch (error) {
+    console.error("Error fetching recent projects:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 // 404 handler

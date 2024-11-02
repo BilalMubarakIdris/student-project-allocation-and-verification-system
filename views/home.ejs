@@ -1,20 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Project Allocation System</title>
-    <link rel="stylesheet" href="/css/style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <h1>Welcome to the Project Allocation System</h1>
-      <p>Manage and search for projects easily!</p>
-
-      <div class="links">
-        <a href="/admin/login">Admin Login</a>
-        <a href="/project/search-project">Search Projects</a>
+<%- include("./patials/header") -%>
+<div class="bg-slate-200 fixed top-0 z-10">
+  <%- include("./patials/navbar") -%>
+</div>
+<div class="pt-16 min-h-screen">
+  <div class="container mx-auto max-w-6xl px-4 mb-8">
+    <h1
+      class="text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-center mt-6 md:mt-8 lg:mt-12 mb-1 lg:mb-2 xl:mb-4 text-gray-800 font-poppins font-bold dark:text-blue-500"
+    >
+      Welcome to the Project Allocation System
+    </h1>
+    <p
+      class="text-base md:text-xl lg:text-3xl text-center mb-4 md:mb-6 lg:mb-8 xl:mb-16 text-gray-800 font-nunito dark:text-blue-400"
+    >
+      Manage and search for All Computer Science projects easily!
+    </p>
+    <div class="flex flex-wrap mt-3 justify-center gap-4 md:gap-10 lg:gap-16">
+      <% projects.forEach(project => { %>
+      <div
+        class="max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+      >
+        <a href="<%= project.link %>" target="_blank">
+          <img
+            class="rounded-t-lg"
+            src="<%= project.imagePath %>"
+            alt="<%= project.title %>"
+          />
+        </a>
+        <div class="p-5">
+          <a href="#">
+            <h5
+              class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+            >
+              <%= project.title %>
+            </h5>
+          </a>
+          <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+            <strong>Author:</strong> <%= project.author %>
+          </p>
+          <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+            <strong>Date Added:</strong> <%= project.createdAt instanceof Date ?
+            project.createdAt.toLocaleDateString() : "Not available" %>
+          </p>
+          <a
+            href="/project/project-details/<%= project._id %>"
+            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            View Details
+            <svg
+              class="rtl:rotate-180 w-3.5 h-3.5 ms-2"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 10"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M1 5h12m0 0L9 1m4 4L9 9"
+              />
+            </svg>
+          </a>
+        </div>
       </div>
+      <% }) %>
     </div>
-  </body>
-</html>
+    <div class="text-center my-6">
+      <a
+        href="/courses-search"
+        class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+      >
+        More Courses
+        <svg
+          class="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 14 10"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M1 5h12m0 0L9 1m4 4L9 9"
+          />
+        </svg>
+      </a>
+    </div>
+    <div
+      class="dark:bg-slate-900 dark:border-t border-gray-700 text-white dark:text-slate-400 print:hidden"
+    >
+      <%- include("./patials/footer") -%>
+    </div>
+  </div>
+</div>
