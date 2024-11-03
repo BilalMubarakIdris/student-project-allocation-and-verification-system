@@ -1,5 +1,26 @@
-<h1>Admin Dashboard</h1>
-<p>Welcome, admin!</p>
-<a href="/admin/add-project">Add Project</a>
-<a href="/project/search-project">Search Projects</a>
-<a href="/admin/logout">Logout</a>
+<%- include("../patials/header") -%>
+<div class="bg-slate-200 fixed top-0 z-10">
+  <%- include("../patials/navbar_admin") -%>
+</div>
+<div class="pt-16 min-h-screen">
+  <div class="container mx-auto max-w-6xl px-4 mb-8">
+    <div class="search-container">
+      <h1
+        class="text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-center mt-6 md:mt-8 lg:mt-12 mb-1 lg:mb-2 xl:mb-4 text-gray-800 font-poppins font-bold dark:text-blue-500"
+      >
+        Admin Dashboard
+      </h1>
+      <h2 class="text-4xl font-extrabold dark:text-white">Welcome, admin!</h2>
+      <% if (successMessage) { %>
+      <div class="flash-message success"><%= successMessage %></div>
+      <% } %> <% if (errorMessage) { %>
+      <div class="flash-message error"><%= errorMessage %></div>
+      <% } %>
+    </div>
+    <div
+      class="dark:bg-slate-900 pt-4 dark:border-t border-gray-700 text-white dark:text-slate-400 print:hidden"
+    >
+      <%- include("../patials/footer") -%>
+    </div>
+  </div>
+</div>
