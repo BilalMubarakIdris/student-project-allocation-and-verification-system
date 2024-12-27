@@ -16,16 +16,78 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Set up Cloudinary storage for multer
+// const storage = new CloudinaryStorage({
+//   cloudinary: cloudinary,
+//   params: async (req, file) => {
+//     let folder = "uploads"; // Default folder
+//     let allowedFormats = [];
+
+//     // Determine the folder and formats based on file type
+//     if (file.mimetype.startsWith("image/")) {
+//       folder = "project_images";
+//       allowedFormats = ["jpg", "png", "jpeg"];
+//     } else if (file.mimetype === "application/pdf") {
+//       folder = "project_pdfs";
+//       allowedFormats = ["pdf"];
+//     }
+
+//     return {
+//       folder,
+//       allowed_formats: allowedFormats,
+//     };
+//   },
+// });
+
+// const upload = multer({ storage });
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: "project_images", // Cloudinary folder name
-    allowed_formats: ["jpg", "png", "jpeg"],
+  params: async (req, file) => {
+    let folder = "uploads"; // Default folder
+    let allowedFormats = [];
+
+    // Determine the folder and formats based on file type
+    if (file.mimetype.startsWith("image/")) {
+      folder = "project_images";
+      allowedFormats = ["jpg", "png", "jpeg"];
+    } else if (file.mimetype === "application/pdf") {
+      folder = "project_pdfs";
+      allowedFormats = ["pdf"];
+    } else if (
+      file.mimetype === "application/msword" ||
+      file.mimetype ===
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ) {
+      folder = "project_documents"; // New folder for Word documents
+      allowedFormats = ["doc", "docx"]; // Add Word document formats
+    }
+
+    return {
+      folder,
+      allowed_formats: allowedFormats,
+    };
   },
 });
 
 const upload = multer({ storage });
+
+// // Set up Cloudinary storage for multer
+// const storage = new CloudinaryStorage({
+//   cloudinary: cloudinary,
+//   params: {
+//     folder: "project_images", // Cloudinary folder name
+//     allowed_formats: ["jpg", "png", "jpeg"],
+//   },
+// });
+
+// const upload = multer({ storage });
+// const pdfStorage = new CloudinaryStorage({
+//   cloudinary: cloudinary,
+//   params: {
+//     folder: "project_pdfs", // Cloudinary folder for PDFs
+//     allowed_formats: ["pdf"], // Restrict to PDF format
+//   },
+// });
+// const uploadPDF = multer({ storage: pdfStorage });
 
 // Default Admin Creation (to be used once)
 router.get("/initialize-admin", async (req, res) => {
@@ -68,25 +130,105 @@ router.get("/add-project", isAuthenticated, (req, res) =>
   res.render("admin/addProject")
 );
 
-// Updated add-project route with Multer middleware
+// add-project route with Multer middleware
+// router.post(
+//   "/add-project",
+//   isAuthenticated,
+//   upload.single("banner"),
+//   async (req, res) => {
+//     const { title, description, author, supervisor, yearOfCompletion } =
+//       req.body;
+//     const newProject = new Project({
+//       title,
+//       description,
+//       author,
+//       supervisor,
+//       yearOfCompletion,
+//       imagePath: req.file ? req.file.path : null,
+//     });
+
+//     try {
+//       await newProject.save();
+//       req.flash("success", "Project added successfully!");
+//       res.redirect("/admin/add-project");
+//     } catch (error) {
+//       console.error("Error adding project:", error);
+//       req.flash("error", "Error: Project title must be unique.");
+//       res.redirect("/admin/add-project");
+//     }
+//   }
+// );
+
+// router.post(
+//   "/add-project",
+//   isAuthenticated,
+//   upload.fields([
+//     { name: "banner", maxCount: 1 }, // For images
+//     { name: "pdf", maxCount: 1 }, // For PDFs
+//   ]),
+//   async (req, res) => {
+//     try {
+//       const { title, description, author, supervisor, yearOfCompletion } =
+//         req.body;
+
+//       // Debugging logs
+//       console.log("Files:", req.files);
+
+//         // console.log("Body:", req.body);
+
+//       const newProject = new Project({
+//         title,
+//         description,
+//         author,
+//         supervisor,
+//         yearOfCompletion,
+//         imagePath: req.files?.banner ? req.files.banner[0].path : null,
+//         pdfPath: req.files?.pdf ? req.files.pdf[0].path : null,
+//       });
+
+//       await newProject.save();
+//       console.log("imagePath:", );
+//       req.flash("success", "Project added successfully!");
+//       res.redirect("/admin/add-project");
+//     } catch (error) {
+//       console.error("Error adding project:", error);
+//       req.flash("error", "Error: Project title must be unique.");
+//       res.redirect("/admin/add-project");
+//     }
+//   }
+// );
 router.post(
   "/add-project",
   isAuthenticated,
-  upload.single("banner"),
+  upload.fields([
+    { name: "banner", maxCount: 1 }, // For images
+    { name: "pdf", maxCount: 1 }, // For PDFs
+  ]),
   async (req, res) => {
-    const { title, description, author, supervisor, yearOfCompletion } =
-      req.body;
-    const newProject = new Project({
-      title,
-      description,
-      author,
-      supervisor,
-      yearOfCompletion,
-      imagePath: req.file ? req.file.path : null,
-    });
-
     try {
-      await newProject.save();
+      const { title, description, author, supervisor, yearOfCompletion } =
+        req.body;
+
+      // Debugging logs for uploaded files and request body
+      console.log("Files:", req.files);
+      console.log("Body:", req.body);
+
+      const newProject = new Project({
+        title,
+        description,
+        author,
+        supervisor,
+        yearOfCompletion,
+        imagePath: req.files?.banner ? req.files.banner[0].path : null,
+        pdfPath: req.files?.pdf ? req.files.pdf[0].path : null,
+      });
+
+      // Save the project document
+      const savedProject = await newProject.save();
+
+      // Debugging log for saved project
+      console.log("Saved Project in Database:", savedProject);
+
       req.flash("success", "Project added successfully!");
       res.redirect("/admin/add-project");
     } catch (error) {
@@ -97,7 +239,6 @@ router.post(
   }
 );
 
-// GET route to render the update form
 // GET route to render the update form
 router.get("/update-project/:id", isAuthenticated, async (req, res) => {
   const projectId = req.params.id;
@@ -121,29 +262,71 @@ router.get("/update-project/:id", isAuthenticated, async (req, res) => {
 });
 
 // POST route to handle the update submission
-// POST route to handle the update submission
+// router.post(
+//   "/update-project/:id",
+//   isAuthenticated,
+//   upload.single("banner"),
+//   async (req, res) => {
+//     const projectId = req.params.id;
+//     const { title, description, author, supervisor, yearOfCompletion } =
+//       req.body;
+//     const updateData = {
+//       title,
+//       description,
+//       author,
+//       supervisor,
+//       yearOfCompletion,
+//       imagePath: req.file ? req.file.path : undefined, // Only update image if a new one is uploaded
+//     };
+
+//     try {
+//       const updatedProject = await Project.findByIdAndUpdate(
+//         projectId,
+//         updateData,
+//         { new: true } // Return the updated document
+//       );
+
+//       if (!updatedProject) {
+//         req.flash("error", "Project not found.");
+//         return res.redirect("/project/search-project");
+//       }
+
+//       req.flash("success", "Project updated successfully!");
+//       res.redirect("/project/search-project"); // Redirect to search or relevant page after update
+//     } catch (error) {
+//       console.error("Error updating project:", error);
+//       req.flash("error", "Error updating project: Title must be unique.");
+//       res.redirect(`/admin/update-project/${projectId}`);
+//     }
+//   }
+// );
 router.post(
   "/update-project/:id",
   isAuthenticated,
-  upload.single("banner"),
+  upload.fields([
+    { name: "banner", maxCount: 1 },
+    { name: "pdf", maxCount: 1 },
+  ]),
   async (req, res) => {
     const projectId = req.params.id;
     const { title, description, author, supervisor, yearOfCompletion } =
       req.body;
+
     const updateData = {
       title,
       description,
       author,
       supervisor,
       yearOfCompletion,
-      imagePath: req.file ? req.file.path : undefined, // Only update image if a new one is uploaded
+      imagePath: req.files?.banner ? req.files.banner[0].path : undefined,
+      pdfPath: req.files?.pdf ? req.files.pdf[0].path : undefined, // Update PDF if provided
     };
 
     try {
       const updatedProject = await Project.findByIdAndUpdate(
         projectId,
         updateData,
-        { new: true } // Return the updated document
+        { new: true }
       );
 
       if (!updatedProject) {
@@ -152,7 +335,7 @@ router.post(
       }
 
       req.flash("success", "Project updated successfully!");
-      res.redirect("/project/search-project"); // Redirect to search or relevant page after update
+      res.redirect("/project/search-project");
     } catch (error) {
       console.error("Error updating project:", error);
       req.flash("error", "Error updating project: Title must be unique.");
@@ -180,16 +363,6 @@ router.post("/delete-project/:id", isAuthenticated, async (req, res) => {
   }
 });
 
-// Logout route
-// router.get("/logout", (req, res) => {
-//   req.session.destroy((err) => {
-//     if (err) {
-//       return res.redirect("/admin/dashboard");
-//     }
-//     res.redirect("/admin/login");
-//   });
-// });
-// Logout Route
 router.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {

@@ -1,6 +1,6 @@
 <%- include("../patials/header") -%>
 <div class="bg-slate-200 fixed top-0 z-10">
-  <%- include("../patials/navbar") -%>
+  <%- include("../patials/navbar_admin") -%>
 </div>
 <div class="pt-16 min-h-screen">
   <div class="container mx-auto max-w-6xl px-4 mb-8">
@@ -59,54 +59,51 @@
           if (data.projects && data.projects.length) {
             data.projects.forEach((project) => {
               const projectCard = `
-                                    <div class="max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                                        ${
-                                          project.imagePath
-                                            ? `<img src="${project.imagePath}" alt="${project.title}"  class="rounded-t-lg">`
-                                            : ""
-                                        }
-                                            <h3>${project.title}</h3>
-                                        <p>Author: ${project.author}</p>
-                                        <a class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" href="/project/project-details/${
-                                          project._id
-                                        }">View Project <svg
-              class="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 14 10"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M1 5h12m0 0L9 1m4 4L9 9"
-              />
-            </svg></a>
-                                        <a class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" href="/admin/update-project/${
-                                          project._id
-                                        }">Edit Project <svg
-              class="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 14 10"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M1 5h12m0 0L9 1m4 4L9 9"
-              />
-            </svg></a>
-                                        <form action="/admin/delete-project/${
-                                          project._id
-                                        }" method="POST" onsubmit="return confirm('Are you sure you want to delete this project?');">
-                                            <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="submit">Delete Project</button>
-                                        </form>
-                                    </div>`;
+  <div class="max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    ${
+      project.imagePath
+        ? `<img src="${project.imagePath}" alt="${project.title}" class="rounded-t-lg">`
+        : `<div class="bg-gray-200 rounded-t-lg h-48 flex items-center justify-center">No Image</div>`
+    }
+    <div class="p-4">
+      <h3 class="text-lg font-bold text-gray-900 dark:text-white">${
+        project.title
+      }</h3>
+      <p class="text-sm text-gray-700 dark:text-gray-400">Author: ${
+        project.author
+      }</p>
+      <p class="text-sm text-gray-700 dark:text-gray-400">Supervisor: ${
+        project.supervisor
+      }</p>
+      <p class="text-sm text-gray-700 dark:text-gray-400">Year of Completion: ${
+        project.yearOfCompletion
+      }</p>
+      ${
+        project.pdfPath
+          ? `<a href="${project.pdfPath}" target="_blank" class="block mt-2 text-blue-500 hover:underline">View Project PDF</a>`
+          : `<p class="mt-2 text-gray-500">No PDF Available</p>`
+      }
+      <div class="flex mt-4 space-x-2">
+        <a href="/project/project-details/${
+          project._id
+        }" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+          View Project
+        </a>
+        <a href="/admin/update-project/${
+          project._id
+        }" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+          Edit Project
+        </a>
+        <form action="/admin/delete-project/${
+          project._id
+        }" method="POST" onsubmit="return confirm('Are you sure you want to delete this project?');">
+          <button type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+            Delete Project
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>`;
 
               $("#project-results").append(projectCard);
             });

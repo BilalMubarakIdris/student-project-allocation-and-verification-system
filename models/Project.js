@@ -8,6 +8,7 @@ const projectSchema = new mongoose.Schema(
     author: String,
     supervisor: String,
     yearOfCompletion: Number,
+    pdfPath: String, // PDF URL
   },
   { timestamps: true }
 );
