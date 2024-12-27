@@ -16,28 +16,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// const storage = new CloudinaryStorage({
-//   cloudinary: cloudinary,
-//   params: async (req, file) => {
-//     let folder = "uploads"; // Default folder
-//     let allowedFormats = [];
-
-//     // Determine the folder and formats based on file type
-//     if (file.mimetype.startsWith("image/")) {
-//       folder = "project_images";
-//       allowedFormats = ["jpg", "png", "jpeg"];
-//     } else if (file.mimetype === "application/pdf") {
-//       folder = "project_pdfs";
-//       allowedFormats = ["pdf"];
-//     }
-
-//     return {
-//       folder,
-//       allowed_formats: allowedFormats,
-//     };
-//   },
-// });
-
 // const upload = multer({ storage });
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
@@ -69,25 +47,6 @@ const storage = new CloudinaryStorage({
 });
 
 const upload = multer({ storage });
-
-// // Set up Cloudinary storage for multer
-// const storage = new CloudinaryStorage({
-//   cloudinary: cloudinary,
-//   params: {
-//     folder: "project_images", // Cloudinary folder name
-//     allowed_formats: ["jpg", "png", "jpeg"],
-//   },
-// });
-
-// const upload = multer({ storage });
-// const pdfStorage = new CloudinaryStorage({
-//   cloudinary: cloudinary,
-//   params: {
-//     folder: "project_pdfs", // Cloudinary folder for PDFs
-//     allowed_formats: ["pdf"], // Restrict to PDF format
-//   },
-// });
-// const uploadPDF = multer({ storage: pdfStorage });
 
 // Default Admin Creation (to be used once)
 router.get("/initialize-admin", async (req, res) => {
@@ -129,74 +88,6 @@ router.get("/dashboard", isAuthenticated, (req, res) => {
 router.get("/add-project", isAuthenticated, (req, res) =>
   res.render("admin/addProject")
 );
-
-// add-project route with Multer middleware
-// router.post(
-//   "/add-project",
-//   isAuthenticated,
-//   upload.single("banner"),
-//   async (req, res) => {
-//     const { title, description, author, supervisor, yearOfCompletion } =
-//       req.body;
-//     const newProject = new Project({
-//       title,
-//       description,
-//       author,
-//       supervisor,
-//       yearOfCompletion,
-//       imagePath: req.file ? req.file.path : null,
-//     });
-
-//     try {
-//       await newProject.save();
-//       req.flash("success", "Project added successfully!");
-//       res.redirect("/admin/add-project");
-//     } catch (error) {
-//       console.error("Error adding project:", error);
-//       req.flash("error", "Error: Project title must be unique.");
-//       res.redirect("/admin/add-project");
-//     }
-//   }
-// );
-
-// router.post(
-//   "/add-project",
-//   isAuthenticated,
-//   upload.fields([
-//     { name: "banner", maxCount: 1 }, // For images
-//     { name: "pdf", maxCount: 1 }, // For PDFs
-//   ]),
-//   async (req, res) => {
-//     try {
-//       const { title, description, author, supervisor, yearOfCompletion } =
-//         req.body;
-
-//       // Debugging logs
-//       console.log("Files:", req.files);
-
-//         // console.log("Body:", req.body);
-
-//       const newProject = new Project({
-//         title,
-//         description,
-//         author,
-//         supervisor,
-//         yearOfCompletion,
-//         imagePath: req.files?.banner ? req.files.banner[0].path : null,
-//         pdfPath: req.files?.pdf ? req.files.pdf[0].path : null,
-//       });
-
-//       await newProject.save();
-//       console.log("imagePath:", );
-//       req.flash("success", "Project added successfully!");
-//       res.redirect("/admin/add-project");
-//     } catch (error) {
-//       console.error("Error adding project:", error);
-//       req.flash("error", "Error: Project title must be unique.");
-//       res.redirect("/admin/add-project");
-//     }
-//   }
-// );
 router.post(
   "/add-project",
   isAuthenticated,
@@ -261,45 +152,6 @@ router.get("/update-project/:id", isAuthenticated, async (req, res) => {
   }
 });
 
-// POST route to handle the update submission
-// router.post(
-//   "/update-project/:id",
-//   isAuthenticated,
-//   upload.single("banner"),
-//   async (req, res) => {
-//     const projectId = req.params.id;
-//     const { title, description, author, supervisor, yearOfCompletion } =
-//       req.body;
-//     const updateData = {
-//       title,
-//       description,
-//       author,
-//       supervisor,
-//       yearOfCompletion,
-//       imagePath: req.file ? req.file.path : undefined, // Only update image if a new one is uploaded
-//     };
-
-//     try {
-//       const updatedProject = await Project.findByIdAndUpdate(
-//         projectId,
-//         updateData,
-//         { new: true } // Return the updated document
-//       );
-
-//       if (!updatedProject) {
-//         req.flash("error", "Project not found.");
-//         return res.redirect("/project/search-project");
-//       }
-
-//       req.flash("success", "Project updated successfully!");
-//       res.redirect("/project/search-project"); // Redirect to search or relevant page after update
-//     } catch (error) {
-//       console.error("Error updating project:", error);
-//       req.flash("error", "Error updating project: Title must be unique.");
-//       res.redirect(`/admin/update-project/${projectId}`);
-//     }
-//   }
-// );
 router.post(
   "/update-project/:id",
   isAuthenticated,
@@ -366,10 +218,9 @@ router.post("/delete-project/:id", isAuthenticated, async (req, res) => {
 router.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      req.flash("error", "Failed to log out. Please try again.");
+      console.error("Failed to destroy session:", err); // Log the error for debugging
       return res.redirect("/admin/dashboard");
     }
-    req.flash("success", "You have been logged out successfully.");
     res.redirect("/admin/login");
   });
 });
